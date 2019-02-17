@@ -1,33 +1,23 @@
 package com.bill.controller;
 
 import java.util.ArrayList;
-import java.util.Scanner;
-
 import com.bill.model.CartItems;
 import com.bill.model.StockItem;
+import com.bill.view.Menu;
 
 public class Cart {
-	ArrayList<StockItem> list = new ArrayList<StockItem>();
-	ArrayList<CartItems> cartList = new ArrayList<CartItems>();
+	private ArrayList<StockItem> list = new ArrayList<StockItem>();
+	private ArrayList<CartItems> cartList = new ArrayList<CartItems>();
 
 	Cart(ArrayList<StockItem> list) {
 		this.list = list;
 	}
 
-	public void startScreen() {
-		System.out.println("");
-		System.out.println("1. Add to Cart");
-		System.out.println("2. Remove From Cart");
-		System.out.println("3. Display Cart");
-		System.out.println("4. Genrate Bill");
-		System.out.println("5. Exit");
-	}
-
 	public void menu() {
 		int option;
 		do {
-			startScreen();
-			option = getUserInput();
+			Menu.cartMenu();
+			option = Menu.getUserInput();
 			if (option != 0) {
 				switch (option) {
 				case 1:
@@ -49,26 +39,29 @@ public class Cart {
 				default:
 					System.out.println("Invaild Input Enter again");
 				}
+			} else {
+				System.out.println("Invaild Input Enter again");
 			}
 		} while (option != 5);
 	}
 
-	private int getUserInput() {
-		Scanner input = new Scanner(System.in);
-		try {
-			return Integer.parseInt(input.nextLine());
-		} catch (NumberFormatException e) {
-			System.out.println("Input is not a valid integer");
-		}
-		return 0;
-	}
-
 	private void addProductToCart() {
+		int id = 0, quantity = 0;
 		System.out.println("Enter Item Id");
-		int id = getUserInput();
-		System.out.println("Enter Quantity");
-		int quantity = getUserInput();
-		addProductToCartByPID(id, quantity);
+		id = Menu.getUserInput();
+		if (id != 0) {
+			System.out.println("Enter Quantity");
+			quantity = Menu.getUserInput();
+			if (quantity != 0) {
+				addProductToCartByPID(id, quantity);
+			} else {
+				System.out.println("Quantity should be greater then 0");
+				return;
+			}
+		} else {
+			System.out.println("id should be greater then 0");
+			return;
+		}
 	}
 
 	public void addProductToCartByPID(int id, int quantity) {
@@ -123,23 +116,28 @@ public class Cart {
 
 	public void removeCartProductByPID() {
 		System.out.println("Enter Item Id");
-		int id = getUserInput();
-		int flag = 0; 
-		CartItems cartItems1 = getCartProductByProductID(id);
 
-		for (CartItems cartItems : cartList) {
-			if (cartItems.equals(cartItems1)) {
+		int flag = 0;
+		int id = Menu.getUserInput();
+		if (id != 0) {
+			CartItems cartItems1 = getCartProductByProductID(id);
 
-				cartList.remove(cartItems);
-				System.out.println("Removed\n");
-				flag = 1;
-				break;
+			for (CartItems cartItems : cartList) {
+				if (cartItems.equals(cartItems1)) {
+
+					cartList.remove(cartItems);
+					System.out.println("Removed\n");
+					flag = 1;
+					break;
+
+				}
 
 			}
-
+			if (flag == 0)
+				System.out.println("Product is not in the Cart\n");
+		} else {
+			return;
 		}
-		if (flag == 0)
-			System.out.println("Product is not in the Cart\n");
 
 	}
 
