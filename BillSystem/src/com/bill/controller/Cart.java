@@ -81,19 +81,34 @@ public class Cart {
 			if (StockItem.getItemQty() >= quantity) {
 				cartItems.setItem(StockItem.getItemId(), StockItem.getItemName(), StockItem.getItemPrice(), quantity);
 				cartList.add(cartItems);
-				updateStock(id, quantity);
+				decreaseStock(id, quantity);
 			} else {
 				System.out.println("Insufficient Quantity");
 			}
 		}
 	}
 
-	void updateStock(int id, int quantity) {
+	void decreaseStock(int id, int quantity) {
 		int count = 0;
 		for (StockItem StockItem : list) {
 			if (StockItem.getItemId() == id) {
 				int temp = StockItem.getItemQty();
 				temp = temp - quantity;
+				list.get(count).setItemQty(temp);
+				break;
+			}
+			count = +1;
+			;
+		}
+
+	}
+
+	void increaseStock(int id, int quantity) {
+		int count = 0;
+		for (StockItem StockItem : list) {
+			if (StockItem.getItemId() == id) {
+				int temp = StockItem.getItemQty();
+				temp = temp + quantity;
 				list.get(count).setItemQty(temp);
 				break;
 			}
@@ -127,6 +142,7 @@ public class Cart {
 
 					cartList.remove(cartItems);
 					System.out.println("Removed\n");
+					increaseStock(id, cartItems.getItemQty());
 					flag = 1;
 					break;
 
